@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Local SQLite DB (cloud DB is on Turso)
+expenses.db
