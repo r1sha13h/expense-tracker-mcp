@@ -86,6 +86,28 @@ def summarize(start_date, end_date, category=None):
     except Exception as e:
         return {"status": "error", "message": f"Error summarizing expenses: {str(e)}"}
 
+@mcp.tool()
+def get_schema():
+    '''Returns the database schema and all valid expense categories with subcategories.'''
+    import json
+    schema = {
+        "table": "expenses",
+        "columns": {
+            "id": "INTEGER, primary key, auto-incremented",
+            "date": "TEXT, required, format YYYY-MM-DD",
+            "amount": "REAL, required, numeric value in INR",
+            "category": "TEXT, required, must be one of the valid categories",
+            "subcategory": "TEXT, optional, must be valid for the chosen category",
+            "note": "TEXT, optional, free-form description"
+        }
+    }
+    try:
+        with open(CATEGORIES_PATH, "r", encoding="utf-8") as f:
+            schema["categories"] = json.load(f)
+    except Exception as e:
+        schema["categories_error"] = str(e)
+    return schema
+
 @mcp.resource("expense:///categories", mime_type="application/json")
 def categories():
     try:
