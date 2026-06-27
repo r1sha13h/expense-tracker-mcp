@@ -21,7 +21,8 @@ def init_db():
                 amount REAL NOT NULL,
                 category TEXT NOT NULL,
                 subcategory TEXT DEFAULT '',
-                note TEXT DEFAULT ''
+                note TEXT DEFAULT '',
+                created_at TEXT DEFAULT (datetime('now'))
             )
         """)
         conn.commit()
@@ -38,7 +39,8 @@ def add_expense(date, amount, category, subcategory="", note=""):
     try:
         conn = get_conn()
         cur = conn.execute(
-            "INSERT INTO expenses(date, amount, category, subcategory, note) VALUES (?,?,?,?,?)",
+            "INSERT INTO expenses(date, amount, category, subcategory, note, created_at) "
+            "VALUES (?,?,?,?,?, datetime('now'))",
             (date, amount, category, subcategory, note)
         )
         conn.commit()
@@ -98,7 +100,8 @@ def get_schema():
             "amount": "REAL, required, numeric value in INR",
             "category": "TEXT, required, must be one of the valid categories",
             "subcategory": "TEXT, optional, must be valid for the chosen category",
-            "note": "TEXT, optional, free-form description"
+            "note": "TEXT, optional, free-form description",
+            "created_at": "TEXT, auto-set by the server (UTC), insertion timestamp; do not pass this in"
         }
     }
     try:
